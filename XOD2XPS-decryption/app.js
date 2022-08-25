@@ -224,8 +224,8 @@ function scrollDocument(speedDown = 1) {
             clearInterval(intervalId);
             return;
         }
-
-        if(partsAvailable === xodBuffer.length) {
+        diff = partsAvailable - xodBuffer.length
+        if(diff < 5) {
             clearInterval(intervalId);
             saveXOD();
             return;
@@ -274,6 +274,7 @@ function saveXOD() {
                     return !!part.decryptedData && part.fileName === zipFileName;
                 });
             });
+			allPartsReady = true;
             if(!allPartsReady) {
                 zip = null;
                 stop();
@@ -327,7 +328,7 @@ function decryptInjection() {
         let inflate = kn.inflate;
         let decrypt = CoreControls.Encryption.decrypt;
         let decryptSynchronous = CoreControls.Encryption.decryptSynchronous;
-        let decryptFunction = (arguments.length > 3) ? decrypt : decryptSynchronous;
+        let decryptFunction = (arguments.length > 0) ? decrypt : decryptSynchronous;
         let decryptedData = decryptSynchronous.apply(this, arguments);
         let fileName = arguments[2];
         let extension = fileName.match(/\.([a-z]+)$/i)[1].toLowerCase();
@@ -364,6 +365,7 @@ function fireFakeMouseMove() {
     event.pageX = readerGeometry.x + 10;
     event.pageY = readerGeometry.y + 10;
     readerWindow.$(readerDocument.querySelector(".document")).trigger(event);
+	
 }
 
 
